@@ -7,10 +7,23 @@ const rfc822DatePatternWithoutDayOfWeek = 'dd MMM yyyy HH:mm:ss Z';
 DateTime? parseDateTime(String? dateString) {
   if (dateString == null) return null;
 
-  return _tryParseRfc822Date(dateString, rfc822DatePattern) ??
+  final parsed = _tryParseRfc822Date(dateString, rfc822DatePattern) ??
       _tryParseRfc822Date(dateString, rfc822DatePatternWithoutSeconds) ??
       _tryParseRfc822Date(dateString, rfc822DatePatternWithoutDayOfWeek) ??
       _parseIso8601DateTime(dateString);
+
+  if (parsed == null) return null;
+
+  return DateTime.utc(
+    parsed.year,
+    parsed.month,
+    parsed.day,
+    parsed.hour,
+    parsed.minute,
+    parsed.second,
+    parsed.millisecond,
+    parsed.microsecond,
+  );
 }
 
 DateTime? _tryParseRfc822Date(String dateString, String pattern) {
